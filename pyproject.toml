@@ -1,0 +1,16 @@
+[project]
+name = "CoexpressionExplorer"
+dependencies = [
+    "flask",
+    "Flask-SQLAlchemy",
+    "pandas"
+    "numpy",
+    "scipy",
+    "multiprocess",
+    "dataclasses",
+    "typing"
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
