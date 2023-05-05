@@ -26,8 +26,9 @@ def load_dataset(name,path,metadata_name,metadata_path):
     meta = DatasetMeta(name=metadata_name, path=metadata_path)
     df = Dataset(name=name, path=path)
     df.dataset_metadata = meta
-    db.session.add(df)
-    db.session.commit()
+    #db.session.add(df)
+    #db.session.commit()
+
 
  # flask --app CoexpressionExplorer load_dataset --name "TCGA, GTEx and TARGET - TPM" --path "/home/ewan/Documents/Expression Data/Parq/TcgaTargetGtex_rsem_gene_tpm_GreaterThanOneTPMmedian.parquet" --metadata_name "Combined TCGA, GTEx and Target sample phenotypes" --metadata_path "/home/ewan/Documents/Expression Data/Annotation/TCGA_target_GTEX_KF_phenotype.txt"
         
