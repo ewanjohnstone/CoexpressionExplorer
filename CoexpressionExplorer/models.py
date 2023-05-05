@@ -13,19 +13,23 @@ class Dataset(db.Model):
     __tablename__ = "datasets"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(30))
-    path: Mapped[str] = mapped_column(String(40))
-    dataset_metadata: Mapped["DatasetMeta"] = relationship(back_populates="dataset")
-    subsample_init: Mapped["DatasetSubsample"] = relationship()
+    name: Mapped[str] = mapped_column(String(50))
+    path: Mapped[str] = mapped_column(String(400))
+    metadata_id: Mapped[int] = mapped_column(ForeignKey("dataset_meta.id"))
+    dataset_metadata: Mapped["DatasetMeta"] = relationship(foreign_keys=metadata_id)
+    #subsample_init_id: Mapped[int] = mapped_column(ForeignKey("dataset_subsamples.id"))
+    #subsample_init: Mapped["DatasetSubsample"] = relationship(foreign_keys=subsample_init_id)
 
 
 class DatasetMeta(db.Model):
     __tablename__ = "dataset_meta"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(30))
-    path: Mapped[str] = mapped_column(String(40))
-    dataset: Mapped["Dataset"] = relationship(back_populates="dataset_metadata")
+    #dataset_id: Mapped[int] = mapped_column(ForeignKey("datasets.id"))
+    name: Mapped[str] = mapped_column(String(50))
+    path: Mapped[str] = mapped_column(String(400))
+    #dataset: Mapped["Dataset"] = relationship(back_populates="dataset_metadata",
+    #                                          foreign_keys=dataset_id)
 
 
 class SampleAnnotation(db.Model):
@@ -48,9 +52,11 @@ class Sample(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     source_id: Mapped[str] = mapped_column(String(30))
+    dataset_id: Mapped[int] = mapped_column(ForeignKey("datasets.id"))
     dataset: Mapped["Dataset"] = relationship()
+    subsample_ids: Mapped[int] = mapped_column(ForeignKey("dataset_subsamples.id")) 
     subsamples: Mapped[List["DatasetSubsample"]] = relationship(secondary=subsample_association_table,
-                                                                back_populates="sample_ids")
+                                                                back_populates="sample_ids",foreign_keys=subsample_ids)
 
 
 
@@ -58,8 +64,9 @@ class DatasetSubsample(db.Model):
     __tablename__ = "dataset_subsamples"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    sample_ids: Mapped[int] = mapped_column(ForeignKey("samples.id"))
     samples: Mapped[List["Sample"]] = relationship(secondary=subsample_association_table,
-                                                 back_populates="subsamples")
+                                                 back_populates="subsamples", foreign_keys=sample_ids)
     dataset: Mapped["Dataset"] = relationship()
     parent_subsample: Mapped[Optional["DatasetSubsample"]] = relationship()
 
